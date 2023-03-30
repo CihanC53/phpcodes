@@ -5,29 +5,27 @@ $username = "deinBenutzername";
 $password = "deinPasswort";
 $dbname = "deineDatenbankname";
 
-$conn = new mysqli($servername, $username, $password, $dbname);
+$conn = mysqli_connect($servername, $username, $password, $dbname);
 
-// Registrierungsformular verarbeiten
+// Benutzer registrieren
 if(isset($_POST['register'])) {
   $username = $_POST['username'];
-  $password = $_POST['password'];
   $email = $_POST['email'];
+  $password = $_POST['password'];
+  $password_hashed = password_hash($password, PASSWORD_DEFAULT); // Passwort hashen, um es sicher zu speichern
 
-  // Überprüfen, ob der Benutzername bereits verwendet wird
-  $sql = "SELECT * FROM users WHERE username='$username'";
+  $sql = "INSERT INTO users (username, email, password) VALUES ('$username', '$email', '$password_hashed')";
   $result = mysqli_query($conn, $sql);
 
-  if(mysqli_num_rows($result) > 0) {
-    // Fehlermeldung, wenn der Benutzername bereits verwendet wird
-    echo "Dieser Benutzername ist bereits vergeben";
-  } else {
-    // Benutzer in die Datenbank einfügen
-    $sql = "INSERT INTO users (username, password, email) VALUES ('$username', '$password', '$email')";
-    mysqli_query($conn, $sql);
-
-    // Erfolgsmeldung und Weiterleitung zur Login-Seite
-    echo "Registrierung erfolgreich abgeschlossen";
+  if($result) {
+    // Erfolgreich registriert, leite den Benutzer zur Login-Seite weiter
     header("location: login.php");
+    exit();
+  } else {
+    // Fehlermeldung, falls die Registrierung fehlschlägt
+    echo "Registrierung fehlgeschlagen";
   }
 }
+
+mysqli_close($conn);
 ?>
