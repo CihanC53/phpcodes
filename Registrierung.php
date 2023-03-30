@@ -12,9 +12,8 @@ if(isset($_POST['register'])) {
   $username = $_POST['username'];
   $email = $_POST['email'];
   $password = $_POST['password'];
-  $password_hashed = password_hash($password, PASSWORD_DEFAULT); // Passwort hashen, um es sicher zu speichern
 
-  $sql = "INSERT INTO users (username, email, password) VALUES ('$username', '$email', '$password_hashed')";
+  $sql = "INSERT INTO users (username, email, password) VALUES ('$username', '$email', '$password')";
   $result = mysqli_query($conn, $sql);
 
   if($result) {
